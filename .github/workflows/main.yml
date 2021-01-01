@@ -1,0 +1,29 @@
+name: Tweet Old Posts
+
+on:
+  schedule:
+    - cron: "00 10,15 * * *"
+  workflow_dispatch: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Tweet Old Posts
+      - uses: actions/checkout@v2
+        with:
+          repository: daveabrock/TweetOldPosts  
+
+      - name: Install .NET 5
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1' 
+
+      - name: Run app
+        env: 
+          FeedUrl: 'https://daveabrock.com/feed.xml'
+          AccessToken: ${{ secrets.twitter_access_token }}
+          AccessSecret: ${{ secrets.twitter_access_token_secret }}
+          ConsumerKey: ${{ secrets.twitter_consumer_key }}
+          ConsumerSecret: ${{ secrets.twitter_consumer_secret }}
+        run: dotnet run -c Release
