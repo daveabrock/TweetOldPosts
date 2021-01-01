@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Tweet Old Posts
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
         with:
           repository: daveabrock/TweetOldPosts  
 
