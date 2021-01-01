@@ -3,8 +3,6 @@ name: Tweet Old Posts
 on:
   schedule:
     - cron: "00 10,15 * * *"
-  workflow_dispatch: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
