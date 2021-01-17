@@ -2,7 +2,7 @@ name: Tweet Old Posts
 
 on:
   schedule:
-    - cron: "00 10,15 * * *"
+    - cron: "00 15 * * *"
   workflow_dispatch: 
 jobs:
   build:
