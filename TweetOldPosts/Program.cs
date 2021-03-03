@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using System.Xml;
+using Azure.Data.Tables;
 using Tweetinvi;
 
 namespace TweetOldPosts
@@ -13,22 +14,26 @@ namespace TweetOldPosts
         static async Task Main(string[] args)
         {
             var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            using var reader = XmlReader.Create(config["FeedUrl"]);
-            var feed = SyndicationFeed.Load(reader);
+            var connectionString = config["ConnectionString"];
 
-            var cutOffDate = new DateTime(2017, 02, 04);
+            var tableClient = new TableClient(
+                connectionString,
+                "posts");
 
-            var randoPost = feed.Items.Where(p => p.PublishDate > cutOffDate &&
-                                             !p.Categories.Any(cat => cat.Name.Contains("dotnet-stacks")) &&
-                                             !p.Categories.Any(cat => cat.Name.Contains("personal")) &&
-                                             !p.Categories.Any(cat => cat.Name.Contains("what-i-am-reading")))
-                            .OrderBy(p => Guid.NewGuid())
-                            .FirstOrDefault();
+            var posts = tableClient.Query<TableEntity>(filter: $"Shared eq false").OrderBy(p => Guid.NewGuid()).Take(1);
 
-            Console.WriteLine($"Good choice! Picking {randoPost.Title.Text}");
+            var model = new PostModel();
+            foreach (var post in posts)
+            {
+                model.Title = post.GetString("Title");
+                model.Url = post.GetString("Url");
+                model.PublishDate = post.GetString("PublishDate");
+            }
+
+            Console.WriteLine($"Good choice! Picking {model.Title}");
 
             var status =
-                $"From the archives ({randoPost.PublishDate.Date.ToShortDateString()}): \"{randoPost.Title.Text}.\" RTs and feedback are always appreciated! {randoPost.Links[0].Uri} #dotnet #csharp #dotnetcore";
+                $"From the archives ({model.PublishDate}): \"{model.Title}.\" RTs and feedback are always appreciated! {model.Url} #dotnet #csharp #dotnetcore";
 
             var consumerKey = config["ConsumerKey"];
             var consumerSecret = config["ConsumerSecret"];
