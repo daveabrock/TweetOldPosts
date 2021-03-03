@@ -25,4 +25,5 @@ jobs:
           AccessSecret: ${{ secrets.twitter_access_token_secret }}
           ConsumerKey: ${{ secrets.twitter_consumer_key }}
           ConsumerSecret: ${{ secrets.twitter_consumer_secret }}
+          ConnectionString: ${{ secrets.connection_string }}
         run: dotnet run --project TweetOldPosts -c Release
