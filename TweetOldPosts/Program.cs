@@ -30,7 +30,7 @@ var post = posts.FirstOrDefault();
 Console.WriteLine($"Good choice! Picking {post.Title}");
 
 var status =
-    $"From the archives ({post.PublishDate}): \"{post.Title}.\" RTs and feedback are always appreciated! {post.Url} #dotnet #csharp #azure #aspnetcore #dotnetcore";
+    $"From the archives ({post.PublishDate}): \"{post.Title}\" RTs and feedback are always appreciated! {post.Url} #dotnet #csharp #azure #aspnetcore #dotnetcore";
 
 var consumerKey = config["ConsumerKey"];
 var consumerSecret = config["ConsumerSecret"];
